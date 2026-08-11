@@ -38,7 +38,19 @@ jobs:
     TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
     TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
   run: |
-    python ./scanner.py
+          - name: Check repository files
+        run: |
+          echo "=== DIRECTORY ==="
+          pwd
+          echo "=== FILE PRESENTI ==="
+          find . -maxdepth 4 -type f -print
+
+      - name: Run Ultra Sniper
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          python ./scanner.py
     echo "=== DIRECTORY ==="
     pwd
     echo "=== FILE ==="
