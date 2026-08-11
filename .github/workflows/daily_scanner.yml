@@ -25,12 +25,28 @@ jobs:
           python -m pip install --upgrade pip
           pip install yfinance pandas numpy requests ta lxml html5lib beautifulsoup4 openpyxl
 
-      - name: Run Ultra Sniper
-        env:
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-        run: |
-          python scanner.py
+      - name: Check repository files
+  run: |- name: Check repository files
+  run: |
+    echo "=== DIRECTORY ==="
+    pwd
+    echo "=== FILE ==="
+    find . -maxdepth 4 -type f -print
+
+- name: Run Ultra Sniper
+  env:
+    TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+    TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+  run: |
+    python ./scanner.py
+    echo "=== DIRECTORY ==="
+    pwd
+    echo "=== FILE ==="
+    find . -maxdepth 4 -type f -print
+
+
+
+  
 
       - name: Save results
         if: always()
