@@ -50,7 +50,9 @@ jobs:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: |
-          python ./scanner.py
+          Run python scanner.py
+python: can't open file '/home/runner/work/Ultra-sniper/Ultra-sniper/scanner.py': [Errno 2] No such file or directory
+Error: Process completed with exit code 2.
     echo "=== DIRECTORY ==="
     pwd
     echo "=== FILE ==="
