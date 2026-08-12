@@ -2,7 +2,6 @@ name: Ultra Sniper Daily Scanner
 
 on:
   workflow_dispatch:
-
   schedule:
     - cron: "15 6 * * 1-5"
 
