@@ -2,6 +2,7 @@ name: Ultra Sniper Daily Scanner
 
 on:
   workflow_dispatch:
+
   schedule:
     - cron: "15 6 * * 1-5"
 
@@ -35,7 +36,7 @@ jobs:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: |
-          SCRIPT=$(find . -name "scanner.py" -type f | head -n 1)
+          SCRIPT=$(find . -iname "scanner.py" -type f | head -n 1)
           echo "Scanner trovato: $SCRIPT"
           python "$SCRIPT"
 
