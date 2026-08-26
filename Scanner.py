@@ -3367,3 +3367,11 @@ print(
 print(
     "=" * 100
 )
+# ============================================================
+# TELEGRAM OUTPUT
+# ============================================================
+
+try:
+    send_telegram_message("🔔 Ultra Sniper V11.4 completato con successo.")
+except Exception as e:
+    print(f"Errore Telegram finale: {e}")
