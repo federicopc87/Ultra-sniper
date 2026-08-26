@@ -40,7 +40,7 @@
 #
 # ============================================================
 
-!pip -q install yfinance pandas numpy ta openpyxl lxml requests tqdm
+
 
 import warnings
 warnings.filterwarnings("ignore")
