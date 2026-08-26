@@ -33,8 +33,8 @@ jobs:
 
       - name: Run Ultra Sniper
         env:
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_BOT_TOKEN: ${{ 8796334125:AAGmKJX86QyteWPKbNkVwfYRkSwu7E0GyzY }}
+          TELEGRAM_CHAT_ID: ${{ 1801705731 }}
         run: |
           SCRIPT=$(find . -iname "scanner.py" -type f | head -n 1)
           echo "Scanner trovato: $SCRIPT"
