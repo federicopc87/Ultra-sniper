@@ -1,48 +1,99 @@
 name: Ultra Sniper Daily Scanner
-
 on:
   workflow_dispatch:
   schedule:
-    - cron: "30 21 * * *"
-
+    - cron: "45 18 * * 1-5"
 jobs:
   scan:
     runs-on: ubuntu-latest
-
     steps:
+      # ============================================================
+      # 1. SCARICA IL REPOSITORY
+      # ============================================================
       - name: Checkout repository
         uses: actions/checkout@v4
-
+      # ============================================================
+      # 2. CONFIGURA PYTHON
+      # ============================================================
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-
-      - name: Install dependencies
+      # ============================================================
+      # 3. AGGIORNA PIP
+      # ============================================================
+      - name: Upgrade pip
         run: |
           python -m pip install --upgrade pip
-          pip install yfinance pandas numpy requests ta lxml html5lib beautifulsoup4 openpyxl
-
+      # ============================================================
+      # 4. INSTALLA TUTTE LE DIPENDENZE
+      # ============================================================
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+      # ============================================================
+      # 5. CONTROLLO FILE
+      # ============================================================
       - name: Check repository files
         run: |
-          echo "=== DIRECTORY ==="
+          echo "=========================================="
+          echo "DIRECTORY"
+          echo "=========================================="
           pwd
-          echo "=== FILE PRESENTI ==="
+          echo ""
+          echo "=========================================="
+          echo "FILE PRESENTI"
+          echo "=========================================="
           find . -maxdepth 4 -type f -print
-
+          echo ""
+          echo "=========================================="
+          echo "PYTHON VERSION"
+          echo "=========================================="
+          python --version
+          echo ""
+          echo "=========================================="
+          echo "TQDM"
+          echo "=========================================="
+          python -c "import tqdm; print('tqdm OK')"
+          echo ""
+          echo "=========================================="
+          echo "YFINANCE"
+          echo "=========================================="
+          python -c "import yfinance; print('yfinance OK')"
+          echo ""
+          echo "=========================================="
+          echo "TA"
+          echo "=========================================="
+          python -c "import ta; print('ta OK')"
+      # ============================================================
+      # 6. ESEGUI ULTRA SNIPER
+      # ============================================================
       - name: Run Ultra Sniper
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: |
           SCRIPT=$(find . -iname "scanner.py" -type f | head -n 1)
+          echo "=========================================="
+          echo "SCANNER"
+          echo "=========================================="
           echo "Scanner trovato: $SCRIPT"
+          echo "=========================================="
+          if [ -z "$SCRIPT" ]; then
+            echo "ERRORE: Scanner.py non trovato!"
+            exit 1
+          fi
           python "$SCRIPT"
-
+      # ============================================================
+      # 7. SALVA I RISULTATI
+      # ============================================================
       - name: Save results
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: ultra-sniper-results
-          path: ULTRA_SNIPER_RESULTS.csv
+          path: |
+            ULTRA_SNIPER_RESULTS.csv
+            ULTRA_SNIPER_V11_4_FIXED_BACKTEST.csv
+            ULTRA_SNIPER_V11_4_FIXED_SCANNER.csv
           if-no-files-found: ignore
