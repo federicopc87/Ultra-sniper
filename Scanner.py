@@ -2111,10 +2111,203 @@ def run_scanner(
         .reset_index(drop=True)
     )
 
-    print("\n🎯 TOP SETUP:")
+        print("\n🎯 TOP SETUP:")
     show_df(today_df)
 
     return today_df
+
+
+# ============================================================
+# 📲 TELEGRAM — ULTRA SNIPER V11.4
+# ============================================================
+
+def send_telegram(message):
+
+    token = os.getenv("TELEGRAM_BOT_TOKEN")
+    chat_id = os.getenv("TELEGRAM_CHAT_ID")
+
+    if not token:
+        print("⚠️ TELEGRAM_BOT_TOKEN non configurato.")
+        return False
+
+    if not chat_id:
+        print("⚠️ TELEGRAM_CHAT_ID non configurato.")
+        return False
+
+    url = f"https://api.telegram.org/bot{token}/sendMessage"
+
+    try:
+
+        response = requests.post(
+            url,
+            data={
+                "chat_id": chat_id,
+                "text": message
+            },
+            timeout=30
+        )
+
+        print(f"📲 Telegram HTTP: {response.status_code}")
+        print(f"Telegram risposta: {response.text}")
+
+        if response.ok:
+
+            data = response.json()
+
+            if data.get("ok") is True:
+                print("✅ Telegram inviato correttamente.")
+                return True
+
+        print("❌ Telegram ha rifiutato il messaggio.")
+        return False
+
+    except Exception as e:
+
+        print(f"❌ Errore Telegram: {e}")
+        return False
+
+
+# ============================================================
+# 📲 CREA MESSAGGIO TELEGRAM
+# ============================================================
+
+def build_telegram_message(today_df):
+
+    if today_df is None:
+
+        return (
+            "❌ ULTRA SNIPER V11.4\n\n"
+            "Errore: today_df non esiste."
+        )
+
+    if today_df.empty:
+
+        return (
+            "🔴 ULTRA SNIPER V11.4\n\n"
+            "NESSUN SETUP VALIDO OGGI.\n\n"
+            "Tutti i filtri operativi sono stati "
+            "applicati correttamente.\n\n"
+            f"RSI operativo: {RSI_FLOOR}-{RSI_CEIL}\n"
+            f"ADX minimo: {ADX_MIN}\n"
+            f"Rel.Volume: {RELVOL_MIN}-{RELVOL_MAX}\n"
+            f"4H confirmation: "
+            f"{'ON' if REQUIRE_4H_CONFIRMATION else 'OFF'}"
+        )
+
+    df = today_df.copy()
+
+    alta = df[
+        df["Convinzione"] == "ALTA"
+    ].copy()
+
+    media = df[
+        df["Convinzione"] == "MEDIA"
+    ].copy()
+
+    lines = [
+        "🚀 ULTRA SNIPER V11.4",
+        "",
+        f"🎯 TOP {len(df)} SETUP",
+        ""
+    ]
+
+    # ========================================================
+    # ALTA CONVINZIONE
+    # ========================================================
+
+    if not alta.empty:
+
+        lines.extend(
+            [
+                "🔥 ALTA CONVINZIONE",
+                "RSI 62–64",
+                ""
+            ]
+        )
+
+        for _, r in alta.iterrows():
+
+            lines.extend(
+                [
+                    f"🔥 {r['Ticker']}",
+                    f"⭐ Score: {r['Score']}",
+                    f"RSI: {r['RSI']}",
+                    f"ADX: {r['ADX']}",
+                    f"Rel.Volume: {r['Rel.Volume']}",
+                    f"Pullback: {r['Pullback %']}%",
+                    f"RS vs SPY: {r['RS vs SPY']}",
+                    "",
+                    f"💰 Entry: ${r['Prezzo']}",
+                    f"🛑 Stop: ${r['Stop']}",
+                    f"🎯 Target: ${r['Target']}",
+                    f"⚠️ Rischio: {r['Rischio %']}%",
+                    f"📊 4H: "
+                    f"{'🟢 BULL' if r['4H Bull'] else '🔴 BEAR'}",
+                    "",
+                    "━━━━━━━━━━━━━━━━━━━━",
+                    ""
+                ]
+            )
+
+    # ========================================================
+    # CONVINZIONE MEDIA
+    # ========================================================
+
+    if not media.empty:
+
+        lines.extend(
+            [
+                "🟢 CONVINZIONE MEDIA",
+                "RSI 60–62 oppure 64–66",
+                ""
+            ]
+        )
+
+        for _, r in media.iterrows():
+
+            lines.extend(
+                [
+                    f"🟢 {r['Ticker']}",
+                    f"⭐ Score: {r['Score']}",
+                    f"RSI: {r['RSI']}",
+                    f"ADX: {r['ADX']}",
+                    f"Rel.Volume: {r['Rel.Volume']}",
+                    f"Pullback: {r['Pullback %']}%",
+                    f"RS vs SPY: {r['RS vs SPY']}",
+                    "",
+                    f"💰 Entry: ${r['Prezzo']}",
+                    f"🛑 Stop: ${r['Stop']}",
+                    f"🎯 Target: ${r['Target']}",
+                    f"⚠️ Rischio: {r['Rischio %']}%",
+                    f"📊 4H: "
+                    f"{'🟢 BULL' if r['4H Bull'] else '🔴 BEAR'}",
+                    "",
+                    "━━━━━━━━━━━━━━━━━━━━",
+                    ""
+                ]
+            )
+
+    # ========================================================
+    # FOOTER
+    # ========================================================
+
+    lines.extend(
+        [
+            "⚙️ FILTRI",
+            f"RSI: {RSI_FLOOR}-{RSI_CEIL}",
+            f"ADX ≥ {ADX_MIN}",
+            f"Rel.Volume: {RELVOL_MIN}-{RELVOL_MAX}",
+            f"ATR % ≤ {ATR_PCT_MAX}",
+            f"Pullback: {PULLBACK_MIN}-{PULLBACK_MAX}%",
+            f"4H confirmation: "
+            f"{'ON' if REQUIRE_4H_CONFIRMATION else 'OFF'}",
+            "",
+            "⚠️ Segnale quantitativo — "
+            "non costituisce consulenza finanziaria."
+        ]
+    )
+
+    return "\n".join(lines)
 
 
 # ============================================================
