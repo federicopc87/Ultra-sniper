@@ -2380,17 +2380,22 @@ def main():
     # SCANNER
     # --------------------------------------------------------
 
-    today_df = run_scanner(
-        daily_frames,
-        weekly_flags,
-        h4_flags,
-        spy_close,
-        market_bullish_now
-    )
+        # --------------------------------------------------------
+    # TELEGRAM
+    # --------------------------------------------------------
 
-    # --------------------------------------------------------
-    # EXPORT
-    # --------------------------------------------------------
+    print("\n" + "=" * 100)
+    print("📲 INVIO ALERT TELEGRAM")
+    print("=" * 100)
+
+    telegram_message = build_telegram_message(today_df)
+
+    telegram_ok = send_telegram(telegram_message)
+
+    if not telegram_ok:
+        print("⚠️ Alert Telegram non inviato.")
+    else:
+        print("✅ Alert Telegram inviato.")
 
     if not trades_df.empty:
         backtest_path = (
