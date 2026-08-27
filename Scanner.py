@@ -2111,7 +2111,7 @@ def run_scanner(
         .reset_index(drop=True)
     )
 
-        print("\n🎯 TOP SETUP:")
+    print("\n🎯 TOP SETUP:")
     show_df(today_df)
 
     return today_df
@@ -2315,6 +2315,7 @@ def build_telegram_message(today_df):
 # ============================================================
 
 def main():
+
     print("=" * 100)
     print("🚀 ULTRA SNIPER V11.4 FIXED")
     print("=" * 100)
@@ -2380,7 +2381,15 @@ def main():
     # SCANNER
     # --------------------------------------------------------
 
-        # --------------------------------------------------------
+    today_df = run_scanner(
+        daily_frames,
+        weekly_flags,
+        h4_flags,
+        spy_close,
+        market_bullish_now
+    )
+
+    # --------------------------------------------------------
     # TELEGRAM
     # --------------------------------------------------------
 
@@ -2397,7 +2406,12 @@ def main():
     else:
         print("✅ Alert Telegram inviato.")
 
+    # --------------------------------------------------------
+    # EXPORT
+    # --------------------------------------------------------
+
     if not trades_df.empty:
+
         backtest_path = (
             BASE_DIR
             / "ULTRA_SNIPER_V11_4_FIXED_BACKTEST.csv"
@@ -2411,6 +2425,7 @@ def main():
         print(f"\n💾 Salvato: {backtest_path}")
 
     if not today_df.empty:
+
         scanner_path = (
             BASE_DIR
             / "ULTRA_SNIPER_V11_4_FIXED_SCANNER.csv"
