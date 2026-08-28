@@ -1,6 +1,9 @@
 name: Ultra Sniper Daily Scanner
 on:
   workflow_dispatch:
+push:
+  branches:
+    - main
   schedule:
   - cron: "09 09 * * 1-5"
     timezone: "Europe/Rome"
