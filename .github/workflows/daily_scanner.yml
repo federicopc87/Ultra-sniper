@@ -2,7 +2,8 @@ name: Ultra Sniper Daily Scanner
 on:
   workflow_dispatch:
   schedule:
-    - cron: "15 23 * * 1-5"
+  - cron: "15 23 * * 1-5"
+    timezone: "Europe/Rome"
 jobs:
   scan:
     runs-on: ubuntu-latest
